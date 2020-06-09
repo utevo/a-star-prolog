@@ -2,51 +2,65 @@ start_A_star( InitState, PathCost) :-
 
 	score(InitState, 0, 0, InitCost, InitScore) ,
 
-	search_A_star( [node(InitState, nil, nil, InitCost , InitScore ) ], [ ], PathCost) .
+	search_A_star( [node(InitState, nil, nil, InitCost , InitScore ) ], [ ], PathCost, 0, 10) .
 
 
+search_A_star(Queue, ClosedSet, PathCost, Step, MaxStep) :-
+	Step \= MaxStep,
 
-
-search_A_star(Queue, ClosedSet, PathCost) :-
+	printStep(Step),
 
 	fetch(Node, Queue, ClosedSet , RestQueue),
 
-	continue(Node, RestQueue, ClosedSet, PathCost).
+	continue(Node, RestQueue, ClosedSet, PathCost, Step, MaxStep).
 
 
 
 continue(node(State, Action, Parent, Cost, _ ) , _  ,  ClosedSet,
-							path_cost(Path, Cost) ) :-
+							path_cost(Path, Cost), _, _) :-
 
 	goal( State), ! ,
 
 	build_path(node(Parent, _ ,_ , _ , _ ) , ClosedSet, [Action/State], Path) .
 
 
-continue(Node, RestQueue, ClosedSet, Path)   :-
+continue(Node, RestQueue, ClosedSet, Path, Step, MaxStep) :-
 
 	expand( Node, NewNodes),
 
 	insert_new_nodes(NewNodes, RestQueue, NewQueue),
 
-	search_A_star(NewQueue, [Node | ClosedSet ], Path).
+	incr(Step, NextStep),
+	search_A_star(NewQueue, [Node | ClosedSet ], Path, NextStep, MaxStep).
 
 
+take(Src, N, Res) :-
+    findall(E, (nth1(I, Src, E), I =< N), Res).
 
 
+fetch(Node, Queue, ClosedSet, NewRest) :-
+    take(Queue, 3, Res),
 
-fetch(node(State, Action,Parent, Cost, Score),
+    write(Res), nl,
+    read(Input),
+    write(Input), nl,
+
+    old_fetch(Node, Queue, ClosedSet, NewRest).
+
+
+% fetchIdx(Node, 0, Queue, ClosedSet, NewRest) :-
+%     old_fetch(Node, Queue, ClosedSet, NewRest)
+
+
+old_fetch(node(State, Action,Parent, Cost, Score),
 			[node(State, Action,Parent, Cost, Score) |RestQueue],									         ClosedSet,  RestQueue) :-
+
 
 	\+ member(node(State, _ ,_  , _ , _ ) , ClosedSet),   ! .
 
+old_fetch(Node, [ _ |RestQueue], ClosedSet, NewRest) :-
 
-fetch(Node, [ _ |RestQueue], ClosedSet, NewRest) :-
-
-	fetch(Node, RestQueue, ClosedSet , NewRest).
-
-
-
+	old_fetch(Node, RestQueue, ClosedSet , NewRest).
 
 
 expand(node(State, _ ,_ , Cost, _ ), NewNodes)  :-
@@ -56,12 +70,6 @@ expand(node(State, _ ,_ , Cost, _ ), NewNodes)  :-
 			    score(ChildState, Cost, StepCost, NewCost, ChildScore) ) ,
 
 											NewNodes) .
-
-
-
-
-
-
 
 
 score(State, ParentCost, StepCost, Cost, FScore)  :-
@@ -101,11 +109,6 @@ insert_p_queue(node(State, Action, Parent, Cost, FScore),  Queue,
 
 
 
-
-
-
-
-
 build_path(node(nil, _, _, _, _ ), _, Path, Path) :-    ! .
 
 build_path(node(EndState, _ , _ , _, _ ), Nodes, PartialPath, Path)  :-
@@ -120,3 +123,12 @@ del([X|R],X,R).
 del([Y|R],X,[Y|R1]) :-
 	X\=Y,
 	del(R,X,R1).
+
+
+incr(X, NewX) :-
+    NewX is X+1.
+
+printStep(Step) :-
+	write('step nr '),
+	write(Step),
+	nl.
