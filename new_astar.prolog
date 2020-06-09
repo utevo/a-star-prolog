@@ -1,39 +1,39 @@
-start_A_star( InitState, PathCost, N, Max) :-
+start_A_star( InitState, PathCost, N, MaxStep) :-
  
     score(InitState, 0, 0, InitCost, InitScore) ,
  
-    search_A_star( [node(InitState, nil, nil, InitCost , InitScore ) ], [ ], PathCost, N,Max) .
+    search_A_star( [node(InitState, nil, nil, InitCost , InitScore ) ], [ ], PathCost, N,MaxStep) .
  
  
  
  
-search_A_star(Queue, ClosedSet, PathCost, N, Max) :-
+search_A_star(Queue, ClosedSet, PathCost, N, MaxStep) :-
  
     newFetch(Node, Queue, ClosedSet , RestQueue, N),
  
-    continue(Node, RestQueue, ClosedSet, PathCost, N, Max).
+    continue(Node, RestQueue, ClosedSet, PathCost, N, MaxStep).
  
  
  
 continue(node(State, Action, Parent, Cost, _ ) , _  ,  ClosedSet,
-                            path_cost(Path, Cost), N, Max) :-
+                            path_cost(Path, Cost), N, MaxStep) :-
  
-    N=<Max,goal( State), ! , 
+    N=<MaxStep,goal( State), ! , 
 	build_path(node(Parent, _ ,_ , _ , _ ) , ClosedSet, [Action/State], Path) .
 
-continue(Node, RestQueue, ClosedSet, Path, N, Max)   :-
+continue(Node, RestQueue, ClosedSet, Path, N, MaxStep)   :-
  
-    N>Max, write("Too Much").
+    N>MaxStep, write("Too Much").
  
  
-continue(Node, RestQueue, ClosedSet, Path,N,Max)   :-
- 	N=<Max,
+continue(Node, RestQueue, ClosedSet, Path,N,MaxStep)   :-
+ 	N=<MaxStep,
     expand(Node, NewNodes),
  
     insert_new_nodes(NewNodes, RestQueue, NewQueue),
 	N1 is N+1,
  
-    search_A_star(NewQueue, [Node | ClosedSet ], Path, N1, Max).
+    search_A_star(NewQueue, [Node | ClosedSet ], Path, N1, MaxStep).
 
 
 newFetch(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  RestQueue, N) :-
