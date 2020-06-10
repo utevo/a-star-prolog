@@ -6,14 +6,29 @@ start_A_star( InitState, PathCost, N, MaxStep) :-
 
  
 search_A_star(Queue, ClosedSet, PathCost, N, Step, MaxStep) :-
- 
-    writeStep(Step),
+    Step=<MaxStep,
+
+    writeStep(Step, MaxStep),
     getOrder(Order, Queue, ClosedSet, N),
     newFetch(Node, Order, Queue, ClosedSet, RestQueue),
  
     continue(Node, RestQueue, ClosedSet, PathCost, N, Step, MaxStep).
- 
- 
+
+% ToDo: Too offten called
+search_A_star(Queue, ClosedSet, Path, N, Step, MaxStep) :-
+    askAboutIncreaseLimit,
+    answerIsYes,
+    MaxStep1 is MaxStep + 1,
+    search_A_star(Queue, ClosedSet, Path, N, Step, MaxStep1).
+
+
+askAboutIncreaseLimit :-
+    write('Increase limit?'),nl.
+
+answerIsYes :-
+    read(Answer),
+    Answer='tak'.
+
  
 continue(node(State, Action, Parent, Cost, _ ) , _  ,  ClosedSet,
                             path_cost(Path, Cost), N, Step, MaxStep) :-
@@ -39,8 +54,8 @@ continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
 
 % my_poligon
 
-writeStep(Step) :-
-    format('Step nr: ~w', [Step]), nl.
+writeStep(Step, MaxStep) :-
+    format('Step/MaxStep: ~w/~w', [Step, MaxStep]), nl.
 
 getOrder(Order, Queue, ClosedSet, N) :-
     readFirstN(Nodes, Queue, ClosedSet, N),
