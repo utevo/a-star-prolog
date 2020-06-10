@@ -3,15 +3,13 @@ start_A_star( InitState, PathCost, N, MaxStep) :-
     score(InitState, 0, 0, InitCost, InitScore) ,
  
     search_A_star( [node(InitState, nil, nil, InitCost , InitScore ) ], [ ], PathCost, N, 0, MaxStep) .
- 
- 
- 
+
  
 search_A_star(Queue, ClosedSet, PathCost, N, Step, MaxStep) :-
  
     writeStep(Step),
-
-    newFetch(Node, Queue, ClosedSet , RestQueue, N),
+    getOrder(Order, Queue, ClosedSet, N),
+    newFetch(Node, Order, Queue, ClosedSet, RestQueue),
  
     continue(Node, RestQueue, ClosedSet, PathCost, N, Step, MaxStep).
  
@@ -43,6 +41,11 @@ continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
 
 writeStep(Step) :-
     format('Step nr: ~w', [Step]), nl.
+
+getOrder(Order, Queue, ClosedSet, N) :-
+    readFirstN(Nodes, Queue, ClosedSet, N),
+    write(Nodes), nl,
+    read(Order).
 
 fetchOneOfFirstN(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  RestQueue, N) :-
     N>=1, \+ member(node(State, _, _, _, _) , ClosedSet).
@@ -81,11 +84,8 @@ fetchWithOrder(Node, [N | _], Queue, ClosedSet, NewQueue) :-
 fetchWithOrder(Node, [_ | RestOrder], Queue, ClosedSet, NewQueue) :-
     fetchWithOrder(Node, RestOrder, Queue, ClosedSet, NewQueue).
 
-% newFetch(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)],[], NewQueue, 2).
-newFetch(Node, Queue, ClosedSet, NewQueue, N) :-
-    readFirstN(Nodes, Queue, ClosedSet, N),
-    write(Nodes), nl,
-    read(Order),
+% newFetch(Node, [2,1], [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)],[], NewQueue).
+newFetch(Node, Order, Queue, ClosedSet, NewQueue) :-
     fetchWithOrder(Node, Order, Queue, ClosedSet, NewQueue).
 
 % end my_poligon
