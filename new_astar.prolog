@@ -43,26 +43,38 @@ newFetch(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Co
     N>=1,\+ member(node(State, _ ,_  , _ , _ ) , ClosedSet).
 
 
-newFetch(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  RQueue, N) :-
+newFetch(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  NewQueue, N) :-
 	N>=1,member(node(State, _ ,_  , _ , _ ), ClosedSet), 
-	newFetch(Node, RestQueue, ClosedSet , RQueue,N).
+	newFetch(Node, RestQueue, ClosedSet , NewQueue,N).
 
 
 newFetch(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  [node(State, Action,Parent, Cost, Score) | NewQueue], N) :-
 	N>1,N1 is N-1,newFetch(Node, RestQueue, ClosedSet , NewQueue,N1).
  
- 
-fetch(node(State, Action,Parent, Cost, Score),
-            [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  RestQueue) :-
- 
-    \+ member(node(State, _ ,_  , _ , _ ) , ClosedSet), !.
- 
- 
-fetch(Node, [ _ |RestQueue], ClosedSet, NewRest) :-
- 
-    fetch(Node, RestQueue, ClosedSet , NewRest).
- 
- 
+
+% my_poligon
+
+readFirstN(Nodes, Queue, ClosedSet, N) :-
+    findall(Node, newFetch(Node, Queue, ClosedSet, _, N), Nodes) .
+
+% ToDo
+fetchN(Node, Queue, ClosedSet, NewQueue, N) :- 
+
+fetchWithOrder(Node, Order, Queue, ClosedSet, NewQueue, N) :-
+    N>=1, fetchN(Node, Queue, ClosedSet, NewQueue, N).
+
+fetchWithOrder(Node, Order, Queue, ClosedSet, NewQueue, N) :-
+    N>1, N1 is N-1, fetchWithOrder(Node, Queue, ClosedSet, NewQueue, N1).
+
+% globalFetch(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)],[], 2).
+globalFetch(Node, Queue, ClosedSet, NewQueue, N) :-
+    readFirstN(Nodes, Queue, ClosedSet, N),
+    write(Nodes), nl,
+    read(Order),
+    write(Order), nl.
+
+% end my_poligon
+
 expand(node(State, _ ,_ , Cost, _ ), NewNodes)  :-
  
     findall(node(ChildState, Action, State, NewCost, ChildScore) ,
