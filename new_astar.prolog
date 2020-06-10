@@ -58,7 +58,8 @@ readFirstN(Nodes, Queue, ClosedSet, N) :-
     findall(Node, newFetch(Node, Queue, ClosedSet, _, N), Nodes) .
 
 % ToDo
-fetchN(Node, Queue, ClosedSet, NewQueue, N) :- 
+fetchN(Node, Queue, ClosedSet, NewQueue, N) :-
+
 
 fetchWithOrder(Node, Order, Queue, ClosedSet, NewQueue, N) :-
     N>=1, fetchN(Node, Queue, ClosedSet, NewQueue, N).
@@ -115,12 +116,6 @@ insert_p_queue(node(State, Action, Parent, Cost, FScore),
  
 insert_p_queue(node(State, Action, Parent, Cost, FScore),  Queue,
                 [node(State, Action, Parent, Cost, FScore)|Queue]) .
- 
- 
- 
- 
- 
- 
  
  
 build_path(node(nil, _, _, _, _ ), _, Path, Path) :-    ! .
