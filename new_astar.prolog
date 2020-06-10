@@ -57,18 +57,18 @@ newFetch(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet, 
 readFirstN(Nodes, Queue, ClosedSet, N) :-
     findall(Node, newFetch(Node, Queue, ClosedSet, _, N), Nodes) .
 
-% fetchN(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)], [], NewQueue, 2). ToDo: Dont work correct :()
+% fetchN(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)], [], NewQueue, 2).
 fetchN(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, RestQueue, 1) :-
     \+ member(node(State, _, _, _, _) , ClosedSet).
 
-fetchN(Node, [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, NewQueue, N) :-
+fetchN(Node, [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, [node(State, Action,Parent, Cost, Score) | NewQueue], N) :-
     N>1,
     \+ member(node(State, _, _, _, _) , ClosedSet),
 
     N1 is N - 1,
     fetchN(Node, RestQueue, ClosedSet, NewQueue, N1).
 
-fetchN(Node, [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, NewQueue, N) :-
+fetchN(Node, [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, [node(State, Action,Parent, Cost, Score) | NewQueue], N) :-
     N>1,
     member(node(State, _, _, _, _) , ClosedSet),
 
@@ -86,7 +86,8 @@ globalFetch(Node, Queue, ClosedSet, NewQueue, N) :-
     readFirstN(Nodes, Queue, ClosedSet, N),
     write(Nodes), nl,
     read(Order),
-    write(Order), nl.
+    write(Order), nl,
+    fetchWithOrder(Node, Queue, ClosedSet, NewQueue).
 
 % end my_poligon
 
