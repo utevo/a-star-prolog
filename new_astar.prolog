@@ -20,16 +20,17 @@ search_A_star(Queue, ClosedSet, PathCost, N, Step, MaxStep) :-
 continue(node(State, Action, Parent, Cost, _ ) , _  ,  ClosedSet,
                             path_cost(Path, Cost), N, Step, MaxStep) :-
  
-    Step=<MaxStep, goal(State), ! , 
+    % Step=<MaxStep,
+    goal(State), ! , 
 	build_path(node(Parent, _ ,_ , _ , _ ) , ClosedSet, [Action/State], Path) .
 
+% continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
+ 
+%     Step>MaxStep, write("Too much steps").
+ 
+ 
 continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
- 
-    Step>MaxStep, write("Too much steps").
- 
- 
-continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
- 	Step=<MaxStep,
+ 	% Step=<MaxStep,
     expand(Node, NewNodes),
  
     insert_new_nodes(NewNodes, RestQueue, NewQueue),
@@ -43,8 +44,18 @@ continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
 writeStep(Step) :-
     format('Step nr: ~w', [Step]), nl.
 
+fetchOneOfFirstN(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  RestQueue, N) :-
+    N>=1, \+ member(node(State, _, _, _, _) , ClosedSet).
+
+fetchOneOfFirstN(Node, [node(State, _, _, _, _) |RestQueue], ClosedSet, NewQueue, N) :-
+	N>=1, member(node(State, _, _, _, _), ClosedSet),
+	fetchOneOfFirstN(Node, RestQueue, ClosedSet , NewQueue, N).
+
+fetchOneOfFirstN(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  [node(State, Action,Parent, Cost, Score) | NewQueue], N) :-
+	N>1, N1 is N-1, fetchOneOfFirstN(Node, RestQueue, ClosedSet, NewQueue, N1).
+
 readFirstN(Nodes, Queue, ClosedSet, N) :-
-    findall(Node, newFetch(Node, Queue, ClosedSet, _, N), Nodes) .
+    findall(Node, fetchOneOfFirstN(Node, Queue, ClosedSet, _, N), Nodes) .
 
 % fetchN(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)], [], NewQueue, 2).
 fetchN(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, RestQueue, 1) :-
@@ -70,7 +81,7 @@ fetchWithOrder(Node, [N | _], Queue, ClosedSet, NewQueue) :-
 fetchWithOrder(Node, [_ | RestOrder], Queue, ClosedSet, NewQueue) :-
     fetchWithOrder(Node, RestOrder, Queue, ClosedSet, NewQueue).
 
-% globalFetch(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)],[], 2).
+% newFetch(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)],[], NewQueue, 2).
 newFetch(Node, Queue, ClosedSet, NewQueue, N) :-
     readFirstN(Nodes, Queue, ClosedSet, N),
     write(Nodes), nl,
