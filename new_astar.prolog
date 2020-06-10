@@ -43,9 +43,9 @@ newFetch(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Co
     N>=1, \+ member(node(State, _, _, _, _) , ClosedSet).
 
 
-newFetch(Node, [node(State, _, _, _, _) |RestQueue], ClosedSet,  NewQueue, N) :-
+newFetch(Node, [node(State, _, _, _, _) |RestQueue], ClosedSet, NewQueue, N) :-
 	N>=1, member(node(State, _, _, _, _), ClosedSet),
-	newFetch(Node, RestQueue, ClosedSet , NewQueue,N).
+	newFetch(Node, RestQueue, ClosedSet , NewQueue, N).
 
 
 newFetch(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  [node(State, Action,Parent, Cost, Score) | NewQueue], N) :-
@@ -57,15 +57,29 @@ newFetch(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet, 
 readFirstN(Nodes, Queue, ClosedSet, N) :-
     findall(Node, newFetch(Node, Queue, ClosedSet, _, N), Nodes) .
 
-% ToDo
-fetchN(Node, Queue, ClosedSet, NewQueue, N) :-
+% fetchN(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)], [], NewQueue, 2). ToDo: Dont work correct :()
+fetchN(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, RestQueue, 1) :-
+    \+ member(node(State, _, _, _, _) , ClosedSet).
 
+fetchN(Node, [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, NewQueue, N) :-
+    N>1,
+    \+ member(node(State, _, _, _, _) , ClosedSet),
 
-fetchWithOrder(Node, Order, Queue, ClosedSet, NewQueue, N) :-
-    N>=1, fetchN(Node, Queue, ClosedSet, NewQueue, N).
+    N1 is N - 1,
+    fetchN(Node, RestQueue, ClosedSet, NewQueue, N1).
 
-fetchWithOrder(Node, Order, Queue, ClosedSet, NewQueue, N) :-
-    N>1, N1 is N-1, fetchWithOrder(Node, Queue, ClosedSet, NewQueue, N1).
+fetchN(Node, [node(State, Action,Parent, Cost, Score) | RestQueue], ClosedSet, NewQueue, N) :-
+    N>1,
+    member(node(State, _, _, _, _) , ClosedSet),
+
+    fetchN(Node, RestQueue, ClosedSet, NewQueue, N).
+
+% fetchWithOrder(Node, [2, 1], [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)], [], NewQueue).
+fetchWithOrder(Node, [N | _], Queue, ClosedSet, NewQueue) :-
+    fetchN(Node, Queue, ClosedSet, NewQueue, N).
+
+fetchWithOrder(Node, [_ | RestOrder], Queue, ClosedSet, NewQueue) :-
+    fetchWithOrder(Node, RestOrder, Queue, ClosedSet, NewQueue).
 
 % globalFetch(Node, [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)],[], 2).
 globalFetch(Node, Queue, ClosedSet, NewQueue, N) :-
