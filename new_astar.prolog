@@ -40,16 +40,16 @@ continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
 
 
 newFetch(node(State, Action,Parent, Cost, Score), [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  RestQueue, N) :-
-    N>=1,\+ member(node(State, _ ,_  , _ , _ ) , ClosedSet).
+    N>=1, \+ member(node(State, _, _, _, _) , ClosedSet).
 
 
-newFetch(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  NewQueue, N) :-
-	N>=1,member(node(State, _ ,_  , _ , _ ), ClosedSet), 
+newFetch(Node, [node(State, _, _, _, _) |RestQueue], ClosedSet,  NewQueue, N) :-
+	N>=1, member(node(State, _, _, _, _), ClosedSet),
 	newFetch(Node, RestQueue, ClosedSet , NewQueue,N).
 
 
 newFetch(Node, [node(State, Action,Parent, Cost, Score) |RestQueue], ClosedSet,  [node(State, Action,Parent, Cost, Score) | NewQueue], N) :-
-	N>1,N1 is N-1,newFetch(Node, RestQueue, ClosedSet , NewQueue,N1).
+	N>1, N1 is N-1, newFetch(Node, RestQueue, ClosedSet, NewQueue, N1).
  
 
 % my_poligon
