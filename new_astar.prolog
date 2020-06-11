@@ -53,8 +53,6 @@ continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
  
     search_A_star(NewQueue, [Node | ClosedSet ], Path, N, NextStep, MaxStep).
 
-% my_poligon
-
 writeStep(Step, MaxStep) :-
     format('Step/MaxStep: ~w/~w', [Step, MaxStep]), nl.
 
@@ -100,7 +98,6 @@ fetchWithOrder(Node, [N | _], Queue, ClosedSet, NewQueue) :-
 fetchWithOrder(Node, [_ | RestOrder], Queue, ClosedSet, NewQueue) :-
     fetchWithOrder(Node, RestOrder, Queue, ClosedSet, NewQueue).
 
-% end my_poligon
 
 expand(node(State, _ ,_ , Cost, _ ), NewNodes)  :-
  
