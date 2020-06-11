@@ -27,7 +27,7 @@ writeState(Queue, Step, MaxStep) :-
     format('Queue: ~w, Step: ~w, MaxStep: ~w', [Queue, Step, MaxStep]), nl.
 
 askAboutIncreaseLimit :-
-    write('Increase limit?'),nl.
+    write('Zwiększyć limit?'),nl.
 
 answerIsYes :-
     read(Answer),
