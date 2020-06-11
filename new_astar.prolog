@@ -8,7 +8,7 @@ start_A_star( InitState, PathCost, N, MaxStep) :-
 search_A_star(Queue, ClosedSet, PathCost, N, Step, MaxStep) :-
     Step=<MaxStep,
 
-    writeStep(Step, MaxStep),
+    writeState(Queue, Step, MaxStep),
     getOrder(Order, Queue, ClosedSet, N),
     fetchWithOrder(Node, Order, Queue, ClosedSet, RestQueue),
  
