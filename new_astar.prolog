@@ -8,26 +8,30 @@ start_A_star( InitState, PathCost, N, MaxStep) :-
 search_A_star(Queue, ClosedSet, PathCost, N, Step, MaxStep) :-
     Step=<MaxStep,
 
-    writeState(Queue, Step, MaxStep),
+    writeState(Queue, ClosedSet, Step, MaxStep),
     getOrder(Order, Queue, ClosedSet, N),
     fetchWithOrder(Node, Order, Queue, ClosedSet, RestQueue),
  
     continue(Node, RestQueue, ClosedSet, PathCost, N, Step, MaxStep).
 
+
 search_A_star(Queue, ClosedSet, Path, N, Step, MaxStep) :-
     Step=<MaxStep,
 
-    writeState(Queue, Step, MaxStep),
+    writeState(Queue, ClosedSet, Step, MaxStep),
     askAboutIncreaseLimit,
     answerIsYes,
     MaxStep1 is MaxStep + 1,
     search_A_star(Queue, ClosedSet, Path, N, Step, MaxStep1).
 
-writeState(Queue, Step, MaxStep) :-
-    format('Queue: ~w, Step: ~w, MaxStep: ~w', [Queue, Step, MaxStep]), nl.
+
+writeState(Queue, ClosedSet, Step, MaxStep) :-
+    format('Queue: ~w~nClosedSet: ~w~nStep: ~w, MaxStep: ~w', [Queue, ClosedSet, Step, MaxStep]), nl.
+
 
 askAboutIncreaseLimit :-
     write('Zwiększyć limit?'),nl.
+
 
 answerIsYes :-
     read(Answer),
