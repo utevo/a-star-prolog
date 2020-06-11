@@ -10,17 +10,21 @@ search_A_star(Queue, ClosedSet, PathCost, N, Step, MaxStep) :-
 
     writeStep(Step, MaxStep),
     getOrder(Order, Queue, ClosedSet, N),
-    newFetch(Node, Order, Queue, ClosedSet, RestQueue),
+    fetchWithOrder(Node, Order, Queue, ClosedSet, RestQueue),
  
     continue(Node, RestQueue, ClosedSet, PathCost, N, Step, MaxStep).
 
-% ToDo: Too offten called
 search_A_star(Queue, ClosedSet, Path, N, Step, MaxStep) :-
+    Step=<MaxStep,
+
+    writeState(Queue, Step, MaxStep),
     askAboutIncreaseLimit,
     answerIsYes,
     MaxStep1 is MaxStep + 1,
     search_A_star(Queue, ClosedSet, Path, N, Step, MaxStep1).
 
+writeState(Queue, Step, MaxStep) :-
+    format('Queue: ~w, Step: ~w, MaxStep: ~w', [Queue, Step, MaxStep]), nl.
 
 askAboutIncreaseLimit :-
     write('Increase limit?'),nl.
@@ -32,18 +36,11 @@ answerIsYes :-
  
 continue(node(State, Action, Parent, Cost, _ ) , _  ,  ClosedSet,
                             path_cost(Path, Cost), N, Step, MaxStep) :-
- 
-    % Step=<MaxStep,
     goal(State), ! , 
 	build_path(node(Parent, _ ,_ , _ , _ ) , ClosedSet, [Action/State], Path) .
-
-% continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
- 
-%     Step>MaxStep, write("Too much steps").
  
  
 continue(Node, RestQueue, ClosedSet, Path, N, Step, MaxStep)   :-
- 	% Step=<MaxStep,
     expand(Node, NewNodes),
  
     insert_new_nodes(NewNodes, RestQueue, NewQueue),
@@ -98,10 +95,6 @@ fetchWithOrder(Node, [N | _], Queue, ClosedSet, NewQueue) :-
 
 fetchWithOrder(Node, [_ | RestOrder], Queue, ClosedSet, NewQueue) :-
     fetchWithOrder(Node, RestOrder, Queue, ClosedSet, NewQueue).
-
-% newFetch(Node, [2,1], [node(a,nil,nil,0,0),node(b,nil,nil,0,0),node(c,nil,nil,0,0)],[], NewQueue).
-newFetch(Node, Order, Queue, ClosedSet, NewQueue) :-
-    fetchWithOrder(Node, Order, Queue, ClosedSet, NewQueue).
 
 % end my_poligon
 
