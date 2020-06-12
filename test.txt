@@ -1,0 +1,80 @@
+?- start_A_star(a, X, 2, 2).
+search_A_star(1)(
+ Queue: [node(a,nil,nil,0,4)],
+ ClosedSet: [],
+ Step: 0, MaxStep: 2
+)
+[node(a,nil,nil,0,4)]
+|: [1].
+search_A_star(1)(
+ Queue: [node(b,ab,a,2,6),node(c,ac,a,3,6)],
+ ClosedSet: [node(a,nil,nil,0,4)],
+ Step: 1, MaxStep: 2
+)
+[node(b,ab,a,2,6),node(c,ac,a,3,6)]
+|: [1,2].
+search_A_star(1)(
+ Queue: [node(c,ac,a,3,6),node(g,bg,b,6,7),node(f,bf,b,5,12)],
+ ClosedSet: [node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 2, MaxStep: 2
+)
+[node(c,ac,a,3,6),node(g,bg,b,6,7)]
+|: [2,1].
+search_A_star(2)(
+ Queue: [node(c,ac,a,3,6),node(g,bg,b,6,7),node(f,bf,b,5,12)],
+ ClosedSet: [node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 2, MaxStep: 2
+)
+Zwiększyć limit?
+|: tak.
+search_A_star(1)(
+ Queue: [node(c,ac,a,3,6),node(g,bg,b,6,7),node(f,bf,b,5,12)],
+ ClosedSet: [node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 2, MaxStep: 3
+)
+[node(c,ac,a,3,6),node(g,bg,b,6,7)]
+|: [2,1].
+search_A_star(1)(
+ Queue: [node(c,ac,a,3,6),node(f,bf,b,5,12)],
+ ClosedSet: [node(g,bg,b,6,7),node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 3, MaxStep: 3
+)
+[node(c,ac,a,3,6),node(f,bf,b,5,12)]
+|: [1,2].
+search_A_star(2)(
+ Queue: [node(c,ac,a,3,6),node(f,bf,b,5,12)],
+ ClosedSet: [node(g,bg,b,6,7),node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 3, MaxStep: 3
+)
+Zwiększyć limit?
+|: nie.
+search_A_star(1)(
+ Queue: [node(d,cd,c,5,6),node(g,bg,b,6,7),node(e,ce,c,6,10),node(f,bf,b,5,12)],
+ ClosedSet: [node(c,ac,a,3,6),node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 3, MaxStep: 3
+)
+[node(d,cd,c,5,6),node(g,bg,b,6,7)]
+|: [2,1].
+search_A_star(2)(
+ Queue: [node(d,cd,c,5,6),node(g,bg,b,6,7),node(e,ce,c,6,10),node(f,bf,b,5,12)],
+ ClosedSet: [node(c,ac,a,3,6),node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 3, MaxStep: 3
+)
+Zwiększyć limit?
+|: tak.
+search_A_star(1)(
+ Queue: [node(d,cd,c,5,6),node(g,bg,b,6,7),node(e,ce,c,6,10),node(f,bf,b,5,12)],
+ ClosedSet: [node(c,ac,a,3,6),node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 3, MaxStep: 4
+)
+[node(d,cd,c,5,6),node(g,bg,b,6,7)]
+|: [1,2].
+search_A_star(1)(
+ Queue: [node(g,bg,b,6,7),node(m,dm,d,7,7),node(e,ce,c,6,10),node(f,bf,b,5,12)],
+ ClosedSet: [node(d,cd,c,5,6),node(c,ac,a,3,6),node(b,ab,a,2,6),node(a,nil,nil,0,4)],
+ Step: 4, MaxStep: 4
+)
+[node(g,bg,b,6,7),node(m,dm,d,7,7)]
+|: [1,2].
+
+X = path_cost([nil/a, ac/c, cd/d, dm/m], 7) .
