@@ -28,7 +28,7 @@ search_A_star(Queue, ClosedSet, Path, N, Step, MaxStep) :-
 writeState1(Queue, ClosedSet, N, Step, MaxStep) :-
     format('search_A_star(1)(~n Queue: ~w,~n ClosedSet: ~w,~n Step: ~w, MaxStep: ~w~n)', [Queue, ClosedSet, Step, MaxStep]), nl.
 
-writeState1(Queue, ClosedSet, N, Step, MaxStep) :-
+writeState2(Queue, ClosedSet, N, Step, MaxStep) :-
     format('search_A_star(2)(~n Queue: ~w,~n ClosedSet: ~w,~n Step: ~w, MaxStep: ~w~n)', [Queue, ClosedSet, Step, MaxStep]), nl.
 
 askAboutIncreaseLimit :-
